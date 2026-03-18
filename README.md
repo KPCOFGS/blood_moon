@@ -6,11 +6,12 @@ Random blood moon events for Luanti. The sky turns red, a massive crimson moon r
 
 ## Features
 
-- **Random trigger** — 1 in 3 chance each night (configurable)
+- **Random trigger** — 1 in 3 chance each night
 - **Red sky** — dark red sky, red fog, red-tinted stars
-- **Blood moon** — large crimson moon texture
+- **Blood moon** — large crimson moon texture (2x scale)
 - **Warning** — chat message and sound when blood moon begins
 - **Automatic reset** — sky returns to normal at dawn
+- **Persistent** — blood moon state saves across world reloads
 
 ## Mod API
 
@@ -22,14 +23,15 @@ bloodmoon.get_damage_mult() -- returns 2.0 during blood moon, 1.0 otherwise
 bloodmoon.get_speed_mult()  -- returns 2.0 during blood moon, 1.0 otherwise
 ```
 
-### Integration with Infectious mod
+## Integration with Infectious mod
 
 When used alongside the **Infectious** mod, blood moon automatically:
 
-- Doubles zombie damage (6 → 12)
-- Doubles zombie movement speed
+- Doubles zombie damage and movement speed
 - Doubles spawn frequency (every 2.5s instead of 5s)
 - Doubles maximum pack size (up to 6 per spawn)
+- Infected Brute gets 95% damage reduction
+- Void Reaper spawn rate tripled
 
 ## Dependencies
 
