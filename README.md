@@ -2,6 +2,8 @@
 
 Random blood moon events for Luanti. The sky turns red, a massive crimson moon rises, and hostile mobs become far more dangerous.
 
+![screenshot1](./docs/demo.png)
+
 ## Features
 
 - **Random trigger** — 1 in 3 chance each night (configurable)
