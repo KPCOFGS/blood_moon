@@ -12,12 +12,13 @@ local DAMAGE_MULT        = 2.0     -- double damage
 local SPEED_MULT         = 2.0     -- double speed
 
 -- =============================================================================
--- State
+-- State (persisted via mod storage)
 -- =============================================================================
 
-local bloodmoon_active = false
+local storage = core.get_mod_storage()
+local bloodmoon_active = storage:get_int("active") == 1
 local last_night = false
-local night_count = 0
+local night_count = storage:get_int("night_count")
 
 -- =============================================================================
 -- Global API: other mods can check if blood moon is active
@@ -91,6 +92,7 @@ end
 
 local function activate_bloodmoon()
     bloodmoon_active = true
+    storage:set_int("active", 1)
 
     for _, player in ipairs(core.get_connected_players()) do
         set_bloodmoon_sky(player)
@@ -114,6 +116,7 @@ end
 local function deactivate_bloodmoon()
     if not bloodmoon_active then return end
     bloodmoon_active = false
+    storage:set_int("active", 0)
 
     for _, player in ipairs(core.get_connected_players()) do
         reset_sky(player)
@@ -128,13 +131,37 @@ end
 -- Day/night cycle detection
 -- =============================================================================
 
-core.register_globalstep(function(dtime)
+local function check_night()
     local tod = core.get_timeofday()
-    local is_night = tod < 0.23 or tod > 0.77
+    if not tod then return false end
+    return tod < 0.23 or tod > 0.77
+end
+local first_step = true
+
+core.register_globalstep(function(dtime)
+    local is_night = check_night()
+
+    -- First step: sync last_night so we don't false-trigger
+    if first_step then
+        first_step = false
+        last_night = is_night
+        -- Re-apply sky if blood moon was saved as active
+        if bloodmoon_active and is_night then
+            for _, player in ipairs(core.get_connected_players()) do
+                set_bloodmoon_sky(player)
+            end
+        elseif not is_night then
+            -- It's day now, clear stale blood moon
+            bloodmoon_active = false
+            storage:set_int("active", 0)
+        end
+        return
+    end
 
     -- Detect transition to night
     if is_night and not last_night then
         night_count = night_count + 1
+        storage:set_int("night_count", night_count)
         if math.random(1, BLOODMOON_CHANCE) == 1 then
             activate_bloodmoon()
         end
