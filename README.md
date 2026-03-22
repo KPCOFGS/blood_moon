@@ -35,8 +35,7 @@ When used alongside the **Infectious** mod, blood moon automatically:
 
 ## Dependencies
 
-- `default` (Minetest Game)
-- Optional: `infectious` (for zombie buff integration)
+No hard dependencies. Works standalone on any game.
 
 ## License
 
